@@ -38,6 +38,15 @@ class RankSVM(base.BaseEstimator):
                                max_iter=self.max_iter)
         return self
 
+    def partial_fit(self, X, y, query_id=None):
+        n_samples, n_features = X.shape
+
+        self.coef_ = svm_update(X, y, self.coef_, self.alpha, n_samples,
+                               n_features, learner_type.sgd_svm,
+                               loop_type.rank, eta_type.basic_eta,
+                               max_iter=self.max_iter)
+        return self
+        
     def rank(self, X):
         order = np.argsort(X.dot(self.coef_))
         order_inv = np.zeros_like(order)
